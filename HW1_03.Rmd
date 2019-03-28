@@ -53,10 +53,11 @@ library(dplyr)
 ## 1.1 效應評估
 
 我們以個體經濟學為考量之進階課程，學生學習成效以**個經PR**（即學生第一次第一學期修完個經在同班的排名）來衡量。令**可修個體**虛擬變數其值為1若該學生通過修課限制可以修個經，反之為0。請寫下正確的效應結構（ 課堂上的Y即這裡的 **個經PR**，請對應課堂的$Y_{1i}-Y_{0i}$寫法，寫出這題的表示句子。)
+$個經PR_{1i}-個經PR_{0i}$
 
 ## 1.2 效應結構
 接續上題，課堂上的treatment dummy即為這裡的**可修個體**dummy，請寫下對應課堂效應結構$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$之對應寫法（以這裡的文字符號表示）。
- 
+ $個經PR_i=個經PR_{0i}+(個經PR_{1i}-個經PR_{0i})可修個體_i$
 ## 1.3 簡單迴歸模型
 考慮使用如下的簡單迴歸模型來估計效應係數：
 $$個經PR_i=\beta_0+\beta_1 可修個體_i+\epsilon_i$$
@@ -77,10 +78,17 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 請進行OLS估計前述的簡單迴歸模型。（注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans13}
+library(sandwich)
+library(dplyr)
+library(lmtest)
+lm(個經PR ~ 可修個體,hw1Data) ->MODEL1
+coeftest(MODEL1,vcov. =vcovHC,type="HC1")
 ```
 
 ## 1.4 選擇性偏誤
-上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
+>上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
+要有可修個經的資格才可以看到個經的PR，只有實驗組沒有對照組。
+虛擬變數的功能是為了區分實驗組跟對照組，當我們設定*可修個經*為虛擬變數時，可以抓到大一沒過經原的人，但當他有*個經PR*時（在大一之後修個經），他仍然需要通過經原以及修過微積分，所以雖然當他*可修個經*=0 時，他的*個經PR*仍然是在有符合經原及格和修過微積分且不為0 的兩者條件（大一後），故無法好好分辨所謂實驗組和對照組，而且當他*可修個經*=0時，無法確定是因為他「經原不及格」還是「微積分的條件沒過」，如果他為前者且之後他重修「經原」之後及格再去修個經，可能會導致個經成績更好，畢竟修兩次經原對個經成績有幫助，不然應該不會以「經原及格與否」來當作擋修條件。
 
 ## 1.5 選擇性偏誤
 這個資料還包含**經原PR**變數，它是學生最後修過的經原成績在該經原班的排名。說明有必要控制**經原PR**的理由（非數學證明）。
@@ -92,6 +100,11 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans16}
+library(sandwich)
+library(dplyr)
+library(lmtest)
+lm(個經PR~可修個體+經原PR,hw1Data) ->model2
+coeftest(model2,vcov. =vcovHC,type="HC1")
 ```
 
 
@@ -99,6 +112,12 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
+group_by(hw1Data,可修個體=1 ) %>% 
+  mutate(hw1Data,經原PR平均=mean(經原PR,na.rm=T)) -> 
+  mutate(hw1Data,個經PR平均=mean(個經PR,na.rm=T)) -> hw1Data
+group_by(hw1Data)
+summary(hw1Data)
+
 ```
 
 
