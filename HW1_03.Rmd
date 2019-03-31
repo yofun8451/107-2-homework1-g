@@ -112,14 +112,8 @@ coeftest(model2,vcov. =vcovHC,type="HC1")
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
-group_by(hw1Data,可修個體=1,add = FALSE ) %>% 
-  mutate(hw1Data,經原PR平均=mean(經原PR,na.rm=T)) -> hw1Data
-group_by(hw1Data,可修個體=0,add = FALSE)
-  mutate(hw1Data,經原PR平均=mean(經原PR,na.rm=T)) -> hw1Data
-summary(hw1Data)
-
 hw1Data %>%
-  group_by(可修個體) %>% summarise(經原ave=mean(經原PR,na.rm=T),個經ave=mean(個經PR,na.rm=T))
+  group_by(可修個體) %>% summarise(經原PR平均=mean(經原PR,na.rm=T),個經PR平均=mean(個經PR,na.rm=T))
 ```
 
 
