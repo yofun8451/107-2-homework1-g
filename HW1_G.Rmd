@@ -9,9 +9,9 @@ output:
       collapsed: true
       smooth_scroll: false
 params:
-  name: ["阿花","阿明"]
-  id: [710761001,710661002]
-  group: "team1"
+  name: ["黃鉦翔","林應廷","張又方","劉婷軒"]
+  id: [710761121,710761129,710761103,710761130]
+  group: "teamG"
   url: ""
 ---
 請依狀況更改上面的name,id及group（分別代表組員姓名，學號及組號），但請勿更改下面三行的設定。  
@@ -53,9 +53,13 @@ library(dplyr)
 ## 1.1 效應評估
 
 我們以個體經濟學為考量之進階課程，學生學習成效以**個經PR**（即學生第一次第一學期修完個經在同班的排名）來衡量。令**可修個體**虛擬變數其值為1若該學生通過修課限制可以修個經，反之為0。請寫下正確的效應結構（ 課堂上的Y即這裡的 **個經PR**，請對應課堂的$Y_{1i}-Y_{0i}$寫法，寫出這題的表示句子。)
+$個經PR_{1i}-個經PR_{0i}$
 
 ## 1.2 效應結構
 接續上題，課堂上的treatment dummy即為這裡的**可修個體**dummy，請寫下對應課堂效應結構$Y_i=Y_{0i}+(Y_{1i}-Y_{0i})T_i$之對應寫法（以這裡的文字符號表示）。
+
+ $個經PR_i=個經PR_{0i}+(個經PR_{1i}-個經PR_{0i})可修個體_i$
+ 
  
 ## 1.3 簡單迴歸模型
 考慮使用如下的簡單迴歸模型來估計效應係數：
@@ -77,10 +81,17 @@ hw1Data <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/mas
 請進行OLS估計前述的簡單迴歸模型。（注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans13}
+library(sandwich)
+library(dplyr)
+library(lmtest)
+lm(個經PR ~ 可修個體,hw1Data) ->MODEL1
+coeftest(MODEL1,vcov. =vcovHC,type="HC1")
 ```
 
 ## 1.4 選擇性偏誤
-上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
+>上題的估計結果很可能不正確，請說明原因故事（非數學證明）。
+要有可修個經的資格才可以看到個經的PR，只有實驗組沒有對照組。
+虛擬變數的功能是為了區分實驗組跟對照組，當我們設定*可修個經*為虛擬變數時，可以抓到大一沒過經原的人，但當他有*個經PR*時（在大一之後修個經），他仍然需要通過經原以及修過微積分，所以雖然當他*可修個經*=0 時，他的*個經PR*仍然是在有符合經原及格和修過微積分且不為0 的兩者條件（大一後），故無法好好分辨所謂實驗組和對照組，而且當他*可修個經*=0時，無法確定是因為他「經原不及格」還是「微積分的條件沒過」，如果他為前者且之後他重修「經原」之後及格再去修個經，可能會導致個經成績更好，畢竟修兩次經原對個經成績有幫助，不然應該不會以「經原及格與否」來當作擋修條件。
 
 ## 1.5 選擇性偏誤
 這個資料還包含**經原PR**變數，它是學生最後修過的經原成績在該經原班的排名。說明有必要控制**經原PR**的理由（非數學證明）。
@@ -92,6 +103,11 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 （注意估計式標準誤必需使用穩健標準誤robust standard error，即使用三明治及HC調整後的標準誤。）
 
 ```{r ans16}
+library(sandwich)
+library(dplyr)
+library(lmtest)
+lm(個經PR~可修個體+經原PR,hw1Data) ->model2
+coeftest(model2,vcov. =vcovHC,type="HC1")
 ```
 
 
@@ -99,22 +115,26 @@ $$個經PR_i=\beta_0+\beta_1 可修個體_i+經原PR_i+\epsilon_i.$$
 請計算**可修個體**為1與0兩群人的**經原PR平均**及**個經PR平均**。（hint: 可利用dplyr套件下的`group_by()`,`summarise()`，及`mean( ,na.rm=T)`, na.rm=T表示計算時排除NA值） 
 
 ```{r ans17}
+hw1Data %>%
+  group_by(可修個體) %>% summarise(經原PR平均=mean(經原PR,na.rm=T),個經PR平均=mean(個經PR,na.rm=T))
 ```
 
 
 ## 1.8 偏誤方向
 
 請填入以下空格完成完整偏誤論述：  
-有控制**經原PR**時，擋修會使得**個經PR** (1)____(上升/下降) (2)____百分點，其值比未控制**經原PR**時還 (3)____(高/低)；這表示忽略**經原PR**會對效應係數估計產生 (4)____(正向偏誤(upward bias)/負向偏誤(downward bias))。之所以會有上述的偏誤方向來自於兩個因素：
+有控制**經原PR**時，擋修會使得**個經PR** (1)_下降_(上升/下降) (2)_1_百分點，其值比未控制**經原PR**時還 (3)_低_(高/低)；這表示忽略**經原PR**會對效應係數估計產生 (4)_正向偏誤_(正向偏誤(upward bias)/負向偏誤(downward bias))。之所以會有上述的偏誤方向來自於兩個因素：
 
-  1. **經原PR**與**個經PR**有(5)____(正向/反向)關連
-  2. **可修個體**=1的族群，其**經原PR**平均較(6)____(高/低)
+  1. **經原PR**與**個經PR**有(5)_正向_(正向/反向)關連
+  2. **可修個體**=1的族群，其**經原PR**平均較(6)_高_(高/低)
   
-故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)____(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)____(高/低)所至。
+故若不控制**經原PR**，因**可修個體**=1與=0兩群人也會分別帶有 **經原PR**  (7)_高與低_(高與低/低與高)特質，所以**可修個體**=1的人其**個經PR**高，有部份是因其**經原PR**也較(8)
+_高_(高/低)所至。
 
 ## 1.9 (Optional, 可不寫)
 
 從前面的論述你發現什麼？背後的效應反映出什麼課程結構或學生學習問題？你會怎麼延伸研究下去。
+
 
 # 2 理論
 
@@ -139,6 +159,24 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
   
   * $\bar{x}=n_1/n$, 其中$n=n_0+n_1$。
 
+ $\bar{y}_1=\sum_{i,x_i=1}y_i/n_1=\sum_{i,x_i=1}x_i y_i/\sum_{i,x_i=1}x_i$
+ $\bar{y}_0=\sum_{i,x_i=0}y_i/n_0=\sum_{i,x_i=0}(1-x_i)y_i/\sum_{i,x_i=0}(1-x_i)$
+ $\hat{\beta}_1=\sum_{i}(x_i-\bar{x})(y_i-\bar{y})/\sum_{i}(x_i-\bar{x})^2$
+ $\sum_{i}(x_i-\bar{x})^2=\sum_{i}x_i^2-n\bar{x}^2$
+ $\sum_{i}x_i^2=\sum_{i}x_i$  #因為$x_{i}$只有0或1
+ $\bar{x}=\frac{\sum_{i}x_i}n=\frac{n_1}{n_1+n_0}$
+ $\sum_{i}(x_i-\bar{x})^2=n_1-(n_0+n_1)\frac{n_1^2}{(n_0+n_1)^2}=n_1-\frac{n_1^2}{(n_0+n_1)}=\frac{n_0n_1+n_1^2-n_1^2}{n_0+n_1}=\frac{n_0n_1}{n_0+n_1}$
+ 
+ $\sum_{i}(x_i-\bar{x})(y_i-\bar{y})$
+ $=\sum_{i}(x_i-\bar{x})y_{i}$
+ $=\sum_{i}x_iy_i-\sum_{i}\bar{x}y_i=n_1\bar{y}_1-\frac{n_1}{n_1+n_0}(n_1\bar{y}_1+n_0\bar{y}_0)$
+ $=\frac{1}{n_0+n_1}[(n_0+n_1)n_1\bar{y}_1-n_1(n_1\bar{y}_1+n_0\bar{y}_0)]$
+ $=\frac{1}{n_0+n_1}[n_0n_1\bar{y}_1+n_1^2\bar{y}_1-n_1^2\bar{y}_1-n_0n_1\bar{y}_0]$
+ $=\frac{n_0n_1}{n_0+n_1}(\bar{y}_1-\bar{y}_0)$
+ 
+ 故$\hat{\beta}_1=\frac{\frac{n_0n_1}{n_0+n_1}(\bar{y}_1-\bar{y}_0)}{\frac{n_0n_1}{n_0+n_1}}$
+   $=\bar{y}_1-\bar{y}_0$
+ 
 
 ## 2.2
 
@@ -146,7 +184,25 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
 
   (a) $E(\hat{\beta}_1)=\beta_1$
   
+  $\hat{\beta}_1=\frac{\sum_{i=1}^N (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^N (x_i-\bar{x})^2}$
+  
+  $=\frac{\sum_{i=1}^N (x_i-\bar{x})y_i}{\sum_{i=1}^N (x_i-\bar{x})^2}$ =
+  $=\frac{\sum_{i=1}^N (x_i-\bar{x})(\beta_0+\beta_1x_i+\epsilon_i)}{\sum_{i=1}^N (x_i-\bar{x})^2}$
+  $\beta_1\frac{\sum_{i=1}^N (x_i-\bar{x})x_i}{\sum_{i=1}^N (x_i-\bar{x})^2}+\frac{\sum_{i=1}^N (x_i-\bar{x})\epsilon_i}{\sum_{i=1}^N (x_i-\bar{x})^2}$
+  $=\beta_1+\frac{\sum_{i=1}^N (x_i-\bar{x})\epsilon_i}{\sum_{i=1}^N (x_i-\bar{x})^2}$
+        because $E(\hat{\beta}_1)=\beta_1$
+          
+   $E(\hat{\beta}_1|x)=E[\beta_1+\frac{\sum_{i=1}^N (x_i-\bar{x})\epsilon_i}{\sum_{i=1}^N (x_i-\bar{x})^2}|x]=\beta_1+0$
+   $E(\hat{\beta}_1)=E(E(\hat{\beta}_1|x))=\beta_1$
+            
+  
   (b) 若條件在已知已知每個觀測值的$x_i$為1或0下$V(\epsilon_i|x_i)=\sigma^2$（即齊質變異），則條件變異數$V(\hat{\beta}_1|X)=\frac{n}{n_1 n_0}\sigma^2$。
+  
+  $v(\hat{\beta}_1|X)=v((\hat{\beta}_1-{\beta})|X)$
+ $=v(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|x)$
+ $=E[(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2})^2|X]-[E(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|X)]^2$
+ $[E(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|X)]^2=0 because E(\epsilon_i|X_i)=0$
+ so that $=1/[\sum{({x_i-\bar{x}})^2})^2\sum{E[({x_i-\bar{x}})^2\epsilon_i^2|x]} = \sigma_i^2/\sum{({x_i-\bar{x}})^2} = \sigma_i^2/(n_0n_1/n_0+n_1) = n\sigma_i^2/n_0n_1$
   
   (c) 若考慮異質變異$V(\epsilon_i|x_i)=\sigma_i^2$，則條件變異數$V(\hat{\beta}_1|X)=\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}$。
 
