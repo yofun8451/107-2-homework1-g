@@ -164,7 +164,11 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
  $\hat{\beta}_1=\sum_{i}(x_i-\bar{x})(y_i-\bar{y})/\sum_{i}(x_i-\bar{x})^2$
  $\sum_{i}(x_i-\bar{x})^2=\sum_{i}x_i^2-n\bar{x}^2$
  $\sum_{i}x_i^2=\sum_{i}x_i$  #因為$x_{i}$只有0或1
- $\bar{x}=
+ $\bar{x}=\frac{\sum_{i}x_i}n=\frac{n_1}{n_1+n_0}$
+ $\sum_{i}(x_i-\bar{x})^2=n_1-(n_0+n_1)\frac{n_1^2}{(n_0+n_1)^2}=n_1-\frac{n_1^2}{(n_0+n_1)}=\frac{n_0n_1+n_1^2-n_1^2}{n_0+n_1}=\frac{n_0n_1}{n_0+n_1}$
+ 
+ $\sum_{i}(x_i-\bar{x})(y_i-\bar{y})=\sum_{i}(x_i-\bar{x})y_{i}=\sum_{i}x_iy_i-\sum_{i}\bar{x}y_i=n_1\bar{y}_1-\frac{n_1}{n_1+n_0}(n_1\bar{y}_1+n_0\bar{y}_0)$
+ 
 
 ## 2.2
 
