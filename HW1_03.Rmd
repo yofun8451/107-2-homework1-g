@@ -159,11 +159,12 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
   
   * $\bar{x}=n_1/n$, 其中$n=n_0+n_1$。
 
-> $ 
-
-
-
-
+ $\bar{y}_1=\sum_{i,x_i=1}y_i/n_1=\sum_{i,x_i=1}x_i y_i/\sum_{i,x_i=1}x_i$
+ $\bar{y}_0=\sum_{i,x_i=0}y_i/n_0=\sum_{i,x_i=0}(1-x_i)y_i/\sum_{i,x_i=0}(1-x_i)$
+ $\hat{\beta}_1=\sum_{i}(x_i-\bar{x})(y_i-\bar{y})/\sum_{i}(x_i-\bar{x})^2$
+ $\sum_{i}(x_i-\bar{x})^2=\sum_{i}x_i^2-n\bar{x}^2$
+ $\sum_{i}x_i^2=\sum_{i}x_i$  #因為$x_{i}$只有0或1
+ $\bar{x}=
 
 ## 2.2
 
