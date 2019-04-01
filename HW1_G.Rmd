@@ -198,9 +198,11 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
   
   (b) 若條件在已知已知每個觀測值的$x_i$為1或0下$V(\epsilon_i|x_i)=\sigma^2$（即齊質變異），則條件變異數$V(\hat{\beta}_1|X)=\frac{n}{n_1 n_0}\sigma^2$。
   
-  $v(\hat{\beta}_1|X)=v((\hat{\beta}_1-{\beta})|X)=v(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|x)=E[(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2})^2|X]-[E(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|X)]^2$
-$[E(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|X)]^2=0 because E(\epsilon_i|X_i)=0$
-$ so =1/[\sum{({x_i-\bar{x}})^2})^2\sum{E[({x_i-\bar{x}})^2\epsilon_i^2|x]} = \sigma_i^2/\sum{({x_i-\bar{x}})^2} = \sigma_i^2/(n_0n_1/n_0+n_1) = n\sigma_i^2/n_0n_1 $
+  $v(\hat{\beta}_1|X)=v((\hat{\beta}_1-{\beta})|X)$
+ $=v(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|x)$
+ $=E[(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2})^2|X]-[E(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|X)]^2$
+ $[E(\sum({x_i}-\bar{x})\epsilon_i)/\sum{({x_i-\bar{x}})^2}|X)]^2=0 because E(\epsilon_i|X_i)=0$
+ so that $=1/[\sum{({x_i-\bar{x}})^2})^2\sum{E[({x_i-\bar{x}})^2\epsilon_i^2|x]} = \sigma_i^2/\sum{({x_i-\bar{x}})^2} = \sigma_i^2/(n_0n_1/n_0+n_1) = n\sigma_i^2/n_0n_1$
   
   (c) 若考慮異質變異$V(\epsilon_i|x_i)=\sigma_i^2$，則條件變異數$V(\hat{\beta}_1|X)=\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}$。
 
