@@ -211,3 +211,15 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
 線性迴歸模型
 $Y=X\beta+\epsilon$
 的OLS估計式$\hat{\beta}=(X'X)^{-1}(X'Y)$。條件在已知$X$下，令$V(\epsilon|X)=\Sigma$。請證明$V(\hat{\beta}|X)=(X'X)^{-1}\Sigma (X'X)$，具有三明治形式（即可表示成$BMB'$的矩陣相乘形式）。
+
+$V(\hat{\beta}|X)=E([\hat{\beta}-E(\hat{\beta}|X)][\hat{\beta}-E(\hat{\beta}|X)])$
+其中$\hat{\beta}=(X'X)^{-1}(X'Y)=(X'X)^{-1}X'(X\beta+\epsilon)$
+    $=(X'X)^{-1}X'X\beta+(X'X)^{-1}X'\epsilon$
+  ->$E(\hat{\beta})=\beta$
+
+ $V(\hat{\beta}|X)=E([(X'X)^{-1}X'(X\beta+\epsilon)-\beta][(X'X)^{-1}X'(X\beta+\epsilon)-\beta]')$
+ $=E[(X'X)^{-1}X\epsilon][(X'X)^{-1}X\epsilon]'$
+ $=E[(x'x)^{-1}x\epsilon\epsilon'x'(x'x)^{-1}]$
+ $=(x'x)^{-1}xE(\epsilon\epsilon')x'(x'x)^{-1}$
+ $=(x'x)^{-1}xV(\epsilon|x)x'(x'x)^{-1}$
+ $=(x'x)^{-1}\Sigma x'(x'x)^{-1}$
