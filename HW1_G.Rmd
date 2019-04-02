@@ -206,6 +206,7 @@ $$\hat{\beta}_1=\bar{y}_1-\bar{y}_0,$$
   
   (c) 若考慮異質變異$V(\epsilon_i|x_i)=\sigma_i^2$，則條件變異數$V(\hat{\beta}_1|X)=\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}$。
 
+ $V(\hat{\beta_1}|x)=V(\bar{y_1}-\bar{y_0})|x)=V(\bar{y_1})+V(\bar{y_0})-2cov(\bar{y_1},\bar{y_0})=\frac{\sigma_1^2}{n_1}+\frac{\sigma_0^2}{n_0}$
 
 ## 2.3 三明治表示式
 線性迴歸模型
